@@ -18,9 +18,13 @@ import pandas as pd
 import re
 from fpdf import FPDF
 import textwrap
+import nltk
 
 
 views = Blueprint('views', __name__)
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('averaged_perceptron_tagger')
 
 nlp = spacy.load("en_core_web_sm")
 
@@ -387,6 +391,7 @@ def assess():
         except Exception as e:
             print(f"Error in assess_essay: {str(e)}")
             flash('Error occurred during assessment.', 'error')
+            flash(f"Error in assess_essay: {str(e)}")
             return redirect(url_for('views.home', folders=user_folders, user=current_user,
                                     question=question, student_number=student_number,
                                     uploaded_file_name=uploaded_file_name))
