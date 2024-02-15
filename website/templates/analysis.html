@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}AEAS | Analysis{% endblock %}
+
+{% block content %}
+<body class="body-result">
+    <div class="content-box" style="padding-bottom: 20px;">
+        <h10 style="padding-bottom: 10px;">ANALYSIS</h10>
+        <ul class="folder-list">
+            {% for student_number in student_numbers %}
+                <a href="/analysis-result/{{ student_number }}">
+                    <li class="folder-item">
+                        <img src="/static/folder.png" alt="Folder Icon" class="folder-icon">
+                        <span 
+                            class="folder-name" 
+                            style="font-size: 14px;"
+                        >{{ student_number|upper }}</span>
+                        <div id="{{ student_number }}" class="files-container" style="display: none;"></div> 
+                    </li>
+                </a>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+{% endblock %}
+
+
+<!-- onclick="toggleFileForm('{{ folder.id }}')" -->

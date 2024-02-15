@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}AES | Analysis{% endblock %}
+
+{% block content %}
+<body class="body-result">
+    
+    <main>
+      
+        <table class="table table-striped table-bordered table-hover table-responsive">
+            <thead class="thead-dark">
+                <tr>
+                    <th style="background-color: #333; width: 200px; text-align: center;">Student Number</th>
+                    <th style="background-color: #333; width: 530px; text-align: center;">Criteria</th>
+                    <th style="background-color: #333; width: 530px; text-align: center;">Average</th>
+                </tr>
+            </thead>
+            <tbody> 
+                {% for item in data %}
+                    <tr>
+                        <td style="background-color: white;width: 200px; text-align: center;">{{item.student_number}}</td>
+                        <td style="background-color: white;width: 200px; text-align: center;">{{item.criteria}}</td>
+                        <td style="background-color: white;width: 200px; text-align: center;">{{item.average}}</td>
+                    </tr> 
+                {% endfor %}
+            </tbody>
+        </table>
+        <h1 class="jumbotron">TOTAL : {{total_average}}</h1>
+    </main>
+    
+</body>
+{% endblock %}
