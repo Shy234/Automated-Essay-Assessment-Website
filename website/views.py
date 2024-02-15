@@ -419,9 +419,8 @@ def resultFolder(folder_id):
 @views.route('/analysis')
 @login_required
 def analysis():
-    files = File.query.group_by(File.student_number).all()      
-                                          
- 
+    files = File.query.filter_by(folder_id=current_user.id).group_by(File.student_number).all()
+                                            
     student_numbers = [file.student_number for file in files]
     print(f"Files: {files}  ")
     print(f"Student Numbers: {student_numbers}")
