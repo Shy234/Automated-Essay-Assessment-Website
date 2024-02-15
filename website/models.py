@@ -19,7 +19,9 @@ class File(db.Model):
     criteria_results = db.Column(JSON)
     folder_id = db.Column(db.Integer, db.ForeignKey('folder.id'), nullable=False)
     folder_rel = db.relationship('Folder', backref=db.backref('files_rel', lazy=True, cascade='all, delete-orphan'))
-    
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    user = db.relationship("User", back_populates="files", primaryjoin="User.id == File.user_id")
 
 
 class User(db.Model, UserMixin):
@@ -28,5 +30,6 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(150))
     first_name = db.Column(db.String(150))
     folders = db.relationship('Folder')
+    files = db.relationship("File", back_populates="user")
 
 
