@@ -18,9 +18,13 @@ import pandas as pd
 import re
 from fpdf import FPDF
 import textwrap
+import nltk
 
 
 views = Blueprint('views', __name__)
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('averaged_perceptron_tagger')
 
 nlp = spacy.load("en_core_web_sm")
 
