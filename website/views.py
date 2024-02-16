@@ -18,13 +18,9 @@ import pandas as pd
 import re
 from fpdf import FPDF
 import textwrap
-import nltk
 
 
 views = Blueprint('views', __name__)
-nltk.download('punkt')
-nltk.download('stopwords')
-nltk.download('averaged_perceptron_tagger')
 
 nlp = spacy.load("en_core_web_sm")
 
@@ -120,6 +116,7 @@ def assess_relevance(essay, additionalQuestion1, relevance_words):
 
     return assigned_relevance_score
 
+#end
 
 def assess_clarity(essay_text):
     doc = nlp(essay_text)
@@ -391,13 +388,9 @@ def assess():
         except Exception as e:
             print(f"Error in assess_essay: {str(e)}")
             flash('Error occurred during assessment.', 'error')
-            flash(f"Error in assess_essay: {str(e)}")
             return redirect(url_for('views.home', folders=user_folders, user=current_user,
                                     question=question, student_number=student_number,
                                     uploaded_file_name=uploaded_file_name))
-
-
-
 
 @views.route('/result')
 @login_required
@@ -424,16 +417,13 @@ def analysis():
     student_numbers = [file.student_number for file in files]
     print(f"Files: {files}  ")
     print(f"Student Numbers: {student_numbers}")
-    
+
     return render_template('analysis.html', user=current_user, student_numbers=student_numbers)
 
 @views.route('/analysis-result/<string:student_number>', methods=["GET"])
 @login_required
 def analysisResult(student_number):
     files = File.query.filter_by(student_number=student_number).all()
-    
-    
-    
     data = [    
         {
             "student_number": file.student_number,
@@ -441,10 +431,7 @@ def analysisResult(student_number):
             "average": file.criteria_results.split("Overall Average: ")[1],
         } 
     for file in files]
-   
-    
     total_average = 0
-    
     for item in data:
         total_average += float(item['average'])
      
@@ -511,14 +498,14 @@ def export_and_download():
     results = request.form.getlist('result')
 
     if len(question.split()) > 9:
-        question_lines = textwrap.wrap(question, width=90) 
+        question_lines = textwrap.wrap(question, width=90)  
         question = '\n'.join(question_lines)
-        
+
         question = question.replace('\n', '\n               ', 1)
 
-        
+
         if len(question_lines) > 1:
-          
+
             question = '\n               '.join([question_lines[0]] + question_lines[1:])
 
     processed_data = (
@@ -534,8 +521,8 @@ def export_and_download():
     num_results = 0
     for result in results:
         key, value = result.split(': ')
-        if key.strip() != "Overall Average":  
-            processed_data += f"               {key.strip()}: {value.strip()}\n"  
+        if key.strip() != "Overall Average": 
+            processed_data += f"               {key.strip()}: {value.strip()}\n" 
             overall_average += float(value.strip())
             num_results += 1
 
@@ -552,7 +539,7 @@ def export_and_download():
            pdf.set_font("Arial", 'B', size=12) 
            pdf.cell(0, 10, line, ln=True, align='C') 
         elif "Overall Average" in line:  
-           pdf.set_font("Arial", 'B', size=12)  
+           pdf.set_font("Arial", 'B', size=12) 
            pdf.cell(0, 10, line, ln=True) 
         else:
            pdf.set_font("Arial", size=12)

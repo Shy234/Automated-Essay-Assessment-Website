@@ -16,14 +16,14 @@
                 <form class="folder-create" method="POST" action="create_folder">
                     <label for="folder_name">Folder Name:</label>
                     <input type="text" name="folder_name" required>
-                    <button type="submit">Create Folder</button>
+                    <button type="submit"style="margin-top: 10px;">Create Folder</button>
                 </form>
                 <div style="box-shadow: 0 0 8px 0 rgba(0, 0, 0, 1);"class="folders-container">
                   <div class="content-box" style="padding-bottom: 20px;">
                   
                     <ul class="folder-list">
                         {% for folder in folders %}
-                        <button type="button" style="padding-top: 10px"  class="close" onClick="confirmDeleteFolder('{{ folder.id }}', '{{ folder.name }}')">
+                        <button type="button" style="padding-left: 10px; padding-top: 9px;" class="close" onClick="confirmDeleteFolder('{{ folder.id }}', '{{ folder.name }}')">
                           <span aria-hidden="true"> <img class="delete-logo" src="{{ url_for('static', filename='del.png') }}" alt="Delete Logo"></span>
                         </button>
                             <a href="./result-folder/{{ folder.id }}">
@@ -38,42 +38,47 @@
                 </div>
                 </div>
             </div>
+    
             <div class="col-md-4 mt-3">
                 <form action="/assess" method="post" enctype="multipart/form-data">
                     <label for="additionalQuestion1">Question:</label>
                     <input type="text" class="form-control" id="additionalQuestion1" name="additionalQuestion1">
-                    <label style="padding-top: 20px" for="studentNumber">Student Number:</label>
+                    <label style="padding-top: 20px"for="studentNumber">Student Number:</label>
                     <input type="text" class="form-control" id="studentNumber" name="studentNumber">
   
-      <div style="padding-top: 10px" class="group-essay">
-          <label> Assessment Criteria: </label>
-          <form action="" method="POST" id="multi-select">
-              <select name="criteria" id="criteria" class="form-control selectpicker" data-live-search="true" multiple style="border: 1px solid black !important; border-radius: 4px !important; color: black !important;">-+
-              <option value="Clarity">Clarity of Expression </option>
-              <option value="Organization">Structural Organization </option>
-              <option value="Relevance">Relevance of Content </option>  
-              <option value="Creativity">Creativity and Originality </option>
-              <option value="Grammar">Grammar and Language Usage </option>
-              <option value="Focus and Details">Focus and Details </option>
-            </select>
-          </form>
-
-          <div id="relevancePopup" class="relevance">
-            <div style="padding-top: 25px; margin: 0 auto; width: 60%;">
-              <label for="relevanceWords" size="+2" style="text-align: center;"><h6>Five words assessing relevance:<br>(If you select the relevance)</h6></label>
+  
+      <div class="group-essay">
+        <label> Assessment Criteria: </label>
+        <form action="" method="POST" id="multi-select">
+            <select name="criteria" id="criteria" class="form-control selectpicker" data-live-search="true" multiple style="border: 1px solid black !important; border-radius: 4px !important; color: black !important;">-+
+            <option value="Clarity">Clarity of Expression </option>
+            <option value="Organization">Structural Organization </option>
+            <option value="Relevance">Relevance of Content </option>  
+            <option value="Creativity">Creativity and Originality </option>
+            <option value="Grammar">Grammar and Language Usage </option>
+            <option value="Focus and Details">Focus and Details </option>
+          </select>
+        </form>
+        <div style="margin-top: 35px; text-align: center;">
+          <div id="relevancePopup" class="relevance" style="margin: 0 auto; width: 100%;">
+              <label for="relevanceWords" size="+2"><h6>Five words assessing relevance:<br>(If you select the relevance)</h6></label>
+              <div style="margin-top: 15px;"></div>
               <input type="text" id="word1" name="word1" placeholder="Word 1">
               <input type="text" id="word2" name="word2" placeholder="Word 2">
               <input type="text" id="word3" name="word3" placeholder="Word 3">
               <input type="text" id="word4" name="word4" placeholder="Word 4">
               <input type="text" id="word5" name="word5" placeholder="Word 5">
-            </div>
-            </div>
-        
+          </div>
+          </div>
+  
           <br/><br/>
-          <label for="essay" style="display: block; text-align: center;">Upload your essay:</label> 
-          <input type="file" name="essay" id="uploadedfilename" accept=".doc, .docx, .txt" style="padding-left: 30px;"><br/>
+          <div align="center">
+          <label for="essay">Upload your essay:</label>
+          <input type="file" name="essay" id="uploadedfilename" accept=".doc, .docx, .txt" style="padding-left: 35px"><br/>
           <div align="center">
           <button type="submit" class="btn btn-primary mt-3">Assess</button>
+</div>
+
         </div>
       </form>
     </div>
