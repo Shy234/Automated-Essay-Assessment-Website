@@ -18,13 +18,9 @@ import pandas as pd
 import re
 from fpdf import FPDF
 import textwrap
-import nltk
 
 
 views = Blueprint('views', __name__)
-nltk.download('punkt')
-nltk.download('stopwords')
-nltk.download('averaged_perceptron_tagger')
 
 nlp = spacy.load("en_core_web_sm")
 
@@ -409,10 +405,6 @@ def result():
 def resultFolder(folder_id):
     folder = Folder.query.filter_by(id=folder_id).first()
     files = File.query.order_by(File.system_score.desc()).filter_by(folder_id=folder_id).all()
-    
-    for file in files:
-        equivalent_score =  float(75.0 + (file.system_score - 1.0) * (25.0 / 4.0))
-        file.equivalent_score = equivalent_score
      
     return render_template('result-folder.html' ,user=current_user, files=files, folder=folder)
 
@@ -449,6 +441,7 @@ def analysisResult(student_number):
       
     
     return render_template('analysis-result.html' , user=current_user, data=data, total_average=total_average)
+
 
 @views.route('/saveToFolder', methods=['POST'])
 def save_to_folder():

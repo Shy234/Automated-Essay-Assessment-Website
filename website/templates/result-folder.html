@@ -15,7 +15,6 @@
                     <th style="background-color: #333; width: 530px; text-align: center;">Question</th>
                     <th style="background-color: #333; width: 217px; text-align: center;">File Name</th>
                     <th style="background-color: #333; width: 160px; text-align: center;">System Score</th>
-                    <th style="background-color: #333; width: 160px; text-align: center;">Equivalent Percentage</th>
                 </tr>
             </thead>
             <tbody> 
@@ -25,7 +24,6 @@
                     <td style="background-color: white;">{{file.question}}</td>
                     <td style="background-color: white; text-align: center;">{{file.name}}</td>
                     <td style="background-color: white; width: 160px; color: {% if file.system_score >= 3.0 %}green{% else %}red{% endif %}; text-align: center;"><strong>{{file.system_score}}</strong></td>
-                    <td style="background-color: white; width: 160px; text-align: center;">{{ file.equivalent_score }}</td>
                 </tr>
                 
                 {% endfor %}
