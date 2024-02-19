@@ -409,6 +409,10 @@ def result():
 def resultFolder(folder_id):
     folder = Folder.query.filter_by(id=folder_id).first()
     files = File.query.order_by(File.system_score.desc()).filter_by(folder_id=folder_id).all()
+    
+    for file in files:
+        equivalent_score =  float(75.0 + (file.system_score - 1.0) * (25.0 / 4.0))
+        file.equivalent_score = equivalent_score
      
     return render_template('result-folder.html' ,user=current_user, files=files, folder=folder)
 
