@@ -450,7 +450,6 @@ def analysisResult(student_number):
     
     return render_template('analysis-result.html' , user=current_user, data=data, total_average=total_average)
 
-
 @views.route('/saveToFolder', methods=['POST'])
 def save_to_folder():
     system_score = float(request.form.get('systemScore', 0.0))
