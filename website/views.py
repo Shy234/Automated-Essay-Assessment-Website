@@ -455,9 +455,12 @@ def analysisResult(student_number):
     total_average /= len(data)
     
     total_average = format(total_average, ".2f")
+
+    equivalent_percentage = 75 + ((float(total_average) - 1) * (25 / 4))
       
     
-    return render_template('analysis-result.html' , user=current_user, data=data, total_average=total_average)
+    return render_template('analysis-result.html' , user=current_user, data=data, total_average=total_average
+                           ,equivalent_percentage=equivalent_percentage)
 
 
 @views.route('/saveToFolder', methods=['POST'])
