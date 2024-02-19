@@ -120,6 +120,7 @@ def assess_relevance(essay, additionalQuestion1, relevance_words):
 
     return assigned_relevance_score
 
+#end
 
 def assess_clarity(essay_text):
     doc = nlp(essay_text)
@@ -395,9 +396,6 @@ def assess():
                                     question=question, student_number=student_number,
                                     uploaded_file_name=uploaded_file_name))
 
-
-
-
 @views.route('/result')
 @login_required
 def result():
@@ -411,11 +409,6 @@ def result():
 def resultFolder(folder_id):
     folder = Folder.query.filter_by(id=folder_id).first()
     files = File.query.order_by(File.system_score.desc()).filter_by(folder_id=folder_id).all()
-
-    for file in files:
-        equivalent_score =  float(75.0 + (file.system_score - 1.0) * (25.0 / 4.0))
-        file.equivalent_score = equivalent_score
-     
      
     return render_template('result-folder.html' ,user=current_user, files=files, folder=folder)
 
@@ -423,21 +416,18 @@ def resultFolder(folder_id):
 @views.route('/analysis')
 @login_required
 def analysis():
-    files = File.query.group_by(File.student_number).all()                                            
- 
+    files = File.query.filter_by(folder_id=current_user.id).group_by(File.student_number).all()
+                                            
     student_numbers = [file.student_number for file in files]
     print(f"Files: {files}  ")
     print(f"Student Numbers: {student_numbers}")
-    
+
     return render_template('analysis.html', user=current_user, student_numbers=student_numbers)
 
 @views.route('/analysis-result/<string:student_number>', methods=["GET"])
 @login_required
 def analysisResult(student_number):
     files = File.query.filter_by(student_number=student_number).all()
-    
-    
-    
     data = [    
         {
             "student_number": file.student_number,
@@ -445,10 +435,7 @@ def analysisResult(student_number):
             "average": file.criteria_results.split("Overall Average: ")[1],
         } 
     for file in files]
-   
-    
     total_average = 0
-    
     for item in data:
         total_average += float(item['average'])
      
@@ -458,7 +445,6 @@ def analysisResult(student_number):
       
     
     return render_template('analysis-result.html' , user=current_user, data=data, total_average=total_average)
-
 
 
 @views.route('/saveToFolder', methods=['POST'])
@@ -516,14 +502,14 @@ def export_and_download():
     results = request.form.getlist('result')
 
     if len(question.split()) > 9:
-        question_lines = textwrap.wrap(question, width=90) 
+        question_lines = textwrap.wrap(question, width=90)  
         question = '\n'.join(question_lines)
-        
+
         question = question.replace('\n', '\n               ', 1)
 
-        
+
         if len(question_lines) > 1:
-          
+
             question = '\n               '.join([question_lines[0]] + question_lines[1:])
 
     processed_data = (
@@ -539,8 +525,8 @@ def export_and_download():
     num_results = 0
     for result in results:
         key, value = result.split(': ')
-        if key.strip() != "Overall Average":  
-            processed_data += f"               {key.strip()}: {value.strip()}\n"  
+        if key.strip() != "Overall Average": 
+            processed_data += f"               {key.strip()}: {value.strip()}\n" 
             overall_average += float(value.strip())
             num_results += 1
 
@@ -557,7 +543,7 @@ def export_and_download():
            pdf.set_font("Arial", 'B', size=12) 
            pdf.cell(0, 10, line, ln=True, align='C') 
         elif "Overall Average" in line:  
-           pdf.set_font("Arial", 'B', size=12)  
+           pdf.set_font("Arial", 'B', size=12) 
            pdf.cell(0, 10, line, ln=True) 
         else:
            pdf.set_font("Arial", size=12)
