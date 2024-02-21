@@ -284,7 +284,27 @@ window.onload = function() {
       criteriaSelect.querySelector(`option[value="${option}"]`).selected = true;
     });
   }
+  var defaultWords = localStorage.getItem("defaultRelevanceWords");
+  if (defaultWords) {
+    var wordsArray = JSON.parse(defaultWords);
+    document.getElementById("word1").value = wordsArray[0] || '';
+    document.getElementById("word2").value = wordsArray[1] || '';
+    document.getElementById("word3").value = wordsArray[2] || '';
+    document.getElementById("word4").value = wordsArray[3] || '';
+    document.getElementById("word5").value = wordsArray[4] || '';
+  }
 };
+
+// Save default words when input changes
+document.querySelectorAll("#relevancePopup input[type='text']").forEach(function(input) {
+  input.addEventListener("input", function() {
+    var words = [];
+    document.querySelectorAll("#relevancePopup input[type='text']").forEach(function(input) {
+      words.push(input.value);
+    });
+    localStorage.setItem("defaultRelevanceWords", JSON.stringify(words));
+  });
+});
 </script>
 
 {% endblock %}
