@@ -13,6 +13,7 @@
                         <img src="/static/folder.png" alt="Folder Icon" class="folder-icon">
                         <span class="folder-name" onclick="toggleFileForm('{{ folder.id }}')" style="font-size: 14px;">{{ folder.name|upper }}</span>
                         <div id="files-{{ folder.id }}" class="files-container" style="display: none;"></div> 
+                        <span aria-hidden="true"> <img class="delete-logo" src="{{ url_for('static', filename='del.png') }}" alt="Delete Logo"></span>
                     </li>
                 </a>
             {% endfor %}
