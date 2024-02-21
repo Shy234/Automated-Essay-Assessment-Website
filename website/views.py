@@ -440,7 +440,7 @@ def analysisResult(student_number):
     for item in data:
         total_average += float(item['average'])
       
-    return render_template('analysis-result.html', user=current_user, data=data, total_average=total_average,equivalent_percentage=equivalent_percentage)
+    return render_template('analysis-result.html', user=current_user, data=data, total_average=total_average)
 
 
 @views.route('/saveToFolder', methods=['POST'])
