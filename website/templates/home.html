@@ -95,7 +95,7 @@
   <div class="card-body">
     <h5 class="card-title">User Inputs</h5>
     <p><strong>Question:</strong> {{ question }}</p>
-    <p><strong>Student Number: </strong>{{ student_number }}</p>
+    <p><strong>Student Number: </strong>{{ student_name }}</p>
     <p><strong>Uploaded File: {{ uploaded_file_name }}</p>
   </div>
   <div id="selected-criteria">
@@ -144,7 +144,7 @@
       </form>
       </div>
       <input type="hidden" name="question" value="{{ question }}">
-      <input type="hidden" name="student_number" value="{{ student_number }}">
+      <input type="hidden" name="student_name" value="{{ student_name }}">
       <input type="hidden" name="essay" value="{{ uploaded_file_name }}">
       <input type="hidden" name="systemScore" value="{{ system_score }}">
       {% for criterion, result in results.items() %}
@@ -156,7 +156,7 @@
 </div>
     <form action="{{ url_for('views.export_and_download') }}" method="post">
       <input type="hidden" name="question" value="{{ question }}">
-      <input type="hidden" name="student_number" value="{{ student_number }}">
+      <input type="hidden" name="student_name" value="{{ student_name }}">
       <input type="hidden" name="essay" value="{{ uploaded_file_name }}">
       {% for criterion, result in results.items() %}
         <input type="hidden" name="result" value="{{ criterion }}: {{ result }}">

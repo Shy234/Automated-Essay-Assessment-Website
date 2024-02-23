@@ -7,15 +7,15 @@
     <div class="content-box" style="padding-bottom: 20px;">
         <h10 style="padding-bottom: 10px;">ANALYSIS</h10>
         <ul class="folder-list">
-            {% for student_number in student_numbers %}
-                <a href="/analysis-result/{{ student_number }}">
+            {% for student_name in student_name %}
+                <a href="/analysis-result/{{ student_name }}">
                     <li class="folder-item">
                         <img src="/static/folder.png" alt="Folder Icon" class="folder-icon">
                         <span 
                             class="folder-name" 
                             style="font-size: 14px;"
-                        >{{ student_number|upper }}</span>
-                        <div id="{{ student_number }}" class="files-container" style="display: none;"></div> 
+                        >{{ student_name|upper }}</span>
+                        <div id="{{ student_name }}" class="files-container" style="display: none;"></div> 
                     </li>
                 </a>
             {% endfor %}
