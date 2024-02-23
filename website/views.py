@@ -287,7 +287,7 @@ def assess_essay(essay_text, selected_criteria):
 def home():
     user_folders = Folder.query.filter_by(user_id=current_user.id).all()
     question = request.form.get('additionalQuestion1', '')
-    student_number = request.form.get('studentNumber', '')
+    student_name = request.form.get('studentNumber', '')
     uploaded_file_name = request.form.get('uploadedfilename', '')
 
 
@@ -296,7 +296,7 @@ def home():
         uploaded_file_name = uploaded_file.filename
 
     return render_template('home.html', folders=user_folders, user=current_user,
-                           question=question, student_number=student_number,
+                           question=question, student_name=student_name,
                            uploaded_file_name=uploaded_file_name)
 
 
@@ -373,7 +373,7 @@ def assess():
         essay_file = request.files.get("essay")
         selected_criteria = request.form.getlist("criteria")
         question = request.form.get('additionalQuestion1', '')
-        student_number = request.form.get('studentNumber', '')
+        student_name = request.form.get('studentNumber', '')
         uploaded_file_name = request.form.get('uploadedfilename', '')
 
         if essay_file:
@@ -384,20 +384,20 @@ def assess():
                 essay_text = essay_file.read().decode("utf-8", errors="ignore")
                 assessment_results = assess_essay(essay_text, selected_criteria)
                 return render_template("home.html", folders=user_folders, results=assessment_results, user=current_user,
-                                       question=question, student_number=student_number,
+                                       question=question, student_name=student_name,
                                        uploaded_file_name=uploaded_file_name, system_score=assessment_results["Overall Average"])
 
             else:
                 assessment_results = {}
                 return render_template("home.html", folders=user_folders, results=assessment_results, user=current_user,
-                                       question=question, student_number=student_number,
+                                       question=question, student_name=student_name,
                                        uploaded_file_name=uploaded_file_name)
 
         except Exception as e:
             print(f"Error in assess_essay: {str(e)}")
             flash('Error occurred during assessment.', 'error')
             return redirect(url_for('views.home', folders=user_folders, user=current_user,
-                                    question=question, student_number=student_number,
+                                    question=question, student_name=student_name,
                                     uploaded_file_name=uploaded_file_name))
 
 @views.route('/result')
@@ -421,21 +421,21 @@ def resultFolder(folder_id):
 @views.route('/analysis')
 @login_required
 def analysis():
-    files = File.query.filter_by(folder_id=current_user.id).group_by(File.student_number).all()
+    files = File.query.filter_by(folder_id=current_user.id).group_by(File.student_name).all()
                                             
-    student_numbers = [file.student_number for file in files]
+    student_name = [file.student_name for file in files]
     print(f"Files: {files}  ")
-    print(f"Student Numbers: {student_numbers}")
+    print(f"Student Numbers: {student_name}")
 
-    return render_template('analysis.html', user=current_user, student_numbers=student_numbers)
+    return render_template('analysis.html', user=current_user, student_name=student_name)
 
-@views.route('/analysis-result/<string:student_number>', methods=["GET"])
+@views.route('/analysis-result/<string:student_name>', methods=["GET"])
 @login_required
-def analysisResult(student_number):
-    files = File.query.filter_by(student_number=student_number).all()
+def analysisResult(student_name):
+    files = File.query.filter_by(student_name=student_name).all()
     data = [    
         {
-            "student_number": file.student_number,
+            "student_name": file.student_name,
             "criteria": file.criteria_results.split("Overall")[0],
             "average": file.criteria_results.split("Overall Average: ")[1],
         } 
@@ -451,7 +451,7 @@ def analysisResult(student_number):
 def save_to_folder():
     system_score = float(request.form.get('systemScore', 0.0))
     question = request.form.get('question', '')
-    student_number = request.form.get('student_number', '')
+    student_name = request.form.get('student_name', '')
     uploaded_file_name = request.form.get('essay', '')
     selected_folder_id = request.form.get('selectedFolderId')
     criteria_results = request.form.getlist('result')
@@ -463,8 +463,8 @@ def save_to_folder():
 
     if not question:
         question = ''
-    if not student_number:
-        student_number = ''
+    if not student_name:
+        student_name = ''
 
     if not system_score:
         system_score = 0.0
@@ -481,7 +481,7 @@ def save_to_folder():
 
     new_file = File(
         question=question,
-        student_number=student_number,
+        student_name=student_name,
         name=uploaded_file_name,
         system_score=system_score,
         criteria_results=results, 
@@ -496,7 +496,7 @@ def save_to_folder():
 
 @views.route('/export_and_download', methods=['POST'])
 def export_and_download():
-    student_number = request.form.get('student_number')
+    student_name = request.form.get('student_name')
     uploaded_file_name = request.form.get('essay', '') 
     question = request.form.get('question')
     results = request.form.getlist('result')
@@ -514,7 +514,7 @@ def export_and_download():
 
     processed_data = (
         "     Essay Assessment Result\n\n"  
-        f"Student Number:       {student_number}\n"
+        f"Student Number:       {student_name}\n"
         f"Upload File Name:    {uploaded_file_name}\n"
         "Question:\n"
         f"               {question}\n" 
