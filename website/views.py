@@ -233,6 +233,7 @@ def assess_essay(essay_text, selected_criteria):
     docx_file = request.files['essay']
     question = request.form['additionalQuestion1']
 
+    word_count = len(essay_text.split())
 
     essay_text = process_docx(docx_file)
 
@@ -242,6 +243,9 @@ def assess_essay(essay_text, selected_criteria):
 
     stop_words = set(stopwords.words('english'))
     filtered_tokens = [word.lower() for word in tokens if word.isalnum() and word.lower() not in stop_words]
+
+     # Add word count to assessment results
+    assessment_results["Word Count"] = word_count
 
     total_score = 0
 
@@ -521,7 +525,7 @@ def export_and_download():
     num_results = 0
     for result in results:
         key, value = result.split(': ')
-        if key.strip() != "Overall Average": 
+        if key.strip() != "Overall Average" and "Word Count" not in key:
             processed_data += f"               {key.strip()}: {value.strip()}\n" 
             overall_average += float(value.strip())
             num_results += 1
@@ -529,6 +533,10 @@ def export_and_download():
     if num_results > 0:
         overall_average /= num_results
         processed_data += f"Overall Average: {overall_average:.2f}\n"
+    
+    word_count = next((result.split(': ')[1].strip() for result in results if result.startswith("Word Count")), None)
+    if word_count:
+        processed_data += f"Word Count: {word_count}\n"
 
     pdf = FPDF()
     pdf.add_page()
