@@ -99,6 +99,7 @@ def assess_focus_and_details(essay_text, additional_question):
 def assess_relevance(essay, additionalQuestion1, relevance_words):
     question_doc = nlp(additionalQuestion1)
     essay_doc = nlp(essay)
+    
 
     all_relevance_words = set(relevance_words)
 
@@ -394,8 +395,8 @@ def assess():
                                        uploaded_file_name=uploaded_file_name)
 
         except Exception as e:
-            print(f"Error in assess_essay: {str(e)}")
-            flash('Error occurred during assessment.', 'error')
+            flash(f"Error occurred during assessment: {str(e)}")
+            flash('Error in assess_essay.', 'error')
             return redirect(url_for('views.home', folders=user_folders, user=current_user,
                                     question=question, student_number=student_number,
                                     uploaded_file_name=uploaded_file_name))
