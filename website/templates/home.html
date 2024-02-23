@@ -43,7 +43,7 @@
                 <form action="/assess" method="post" enctype="multipart/form-data">
                     <label for="additionalQuestion1">Question:</label>
                     <input type="text" class="form-control" id="additionalQuestion1" name="additionalQuestion1">
-                    <label style="padding-top: 20px"for="studentNumber">Student Number:</label>
+                    <label style="padding-top: 20px"for="studentNumber">Student Name:</label>
                     <input type="text" class="form-control" id="studentNumber" name="studentNumber">
   
   
@@ -95,7 +95,7 @@
   <div class="card-body">
     <h5 class="card-title">User Inputs</h5>
     <p><strong>Question:</strong> {{ question }}</p>
-    <p><strong>Student Number: </strong>{{ student_number }}</p>
+    <p><strong>Student Name: </strong>{{ student_number }}</p>
     <p><strong>Uploaded File: {{ uploaded_file_name }}</p>
   </div>
   <div id="selected-criteria">
