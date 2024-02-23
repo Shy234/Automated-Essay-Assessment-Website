@@ -20,7 +20,7 @@
             <tbody> 
                 {% for file in files %}
                 <tr>
-                    <td style="background-color: white;width: 200px; text-align: center;">{{file.student_name}}</td>
+                    <td style="background-color: white;width: 200px; text-align: center;">{{file.student_number}}</td>
                     <td style="background-color: white;">{{file.question}}</td>
                     <td style="background-color: white; text-align: center;">{{file.name}}</td>
                     <td style="background-color: white; width: 160px; color: {% if file.system_score >= 3.0 %}green{% else %}red{% endif %}; text-align: center;"><strong>{{file.system_score}}/5</strong></td>

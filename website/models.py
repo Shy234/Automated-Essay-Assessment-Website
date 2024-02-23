@@ -13,7 +13,7 @@ class Folder(db.Model):
 class File(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     question = db.Column(db.String) 
-    student_name = db.Column(db.String(20))
+    student_number = db.Column(db.String(20))
     name = db.Column(db.String(100))
     system_score = db.Column(db.Float)
     criteria_results = db.Column(JSON)
