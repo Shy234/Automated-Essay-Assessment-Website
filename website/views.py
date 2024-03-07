@@ -237,6 +237,8 @@ def assess_essay(essay_text, selected_criteria):
     word_count = len(essay_text.split())
 
     essay_text = process_docx(docx_file)
+    word_count = len(essay_text.split())
+    assessment_results["Word Count"] = word_count
 
     tokens = word_tokenize(essay_text)
     tagged_tokens = pos_tag(tokens)
@@ -244,9 +246,6 @@ def assess_essay(essay_text, selected_criteria):
 
     stop_words = set(stopwords.words('english'))
     filtered_tokens = [word.lower() for word in tokens if word.isalnum() and word.lower() not in stop_words]
-
-     # Add word count to assessment results
-    assessment_results["Word Count"] = word_count
 
     total_score = 0
 
@@ -515,7 +514,7 @@ def export_and_download():
 
     processed_data = (
         "     Automated Essay Assessment Result\n"  
-        f"Student Number:       {student_number}\n"
+        f"Student Name:       {student_number}\n"
         f"Upload File Name:    {uploaded_file_name}\n"
         "Question:\n"
         f"               {question}\n" 
@@ -535,9 +534,16 @@ def export_and_download():
         overall_average /= num_results
         processed_data += f"             Overall Average: {overall_average:.2f}\n"
     
-    word_count = next((result.split(': ')[1].strip() for result in results if result.startswith("Word Count")), None)
-    if word_count:
-        processed_data += f"             Word Count: {word_count}\n"
+    word_count = None
+    for result in results:
+            if result.startswith("Word Count"):
+                parts = result.split(': ')
+                if len(parts) == 2:
+                    word_count = parts[1].strip()
+                    break
+
+    if word_count is not None:
+            processed_data += f"               Word Count: {word_count}\n"
 
     pdf = FPDF()
     pdf.add_page()
