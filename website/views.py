@@ -514,7 +514,7 @@ def export_and_download():
             question = '\n               '.join([question_lines[0]] + question_lines[1:])
 
     processed_data = (
-        "     Essay Assessment Result\n\n"  
+        "     Automated Essay Assessment Result\n"  
         f"Student Number:       {student_number}\n"
         f"Upload File Name:    {uploaded_file_name}\n"
         "Question:\n"
@@ -533,26 +533,39 @@ def export_and_download():
 
     if num_results > 0:
         overall_average /= num_results
-        processed_data += f"Overall Average: {overall_average:.2f}\n"
+        processed_data += f"             Overall Average: {overall_average:.2f}\n"
     
     word_count = next((result.split(': ')[1].strip() for result in results if result.startswith("Word Count")), None)
     if word_count:
-        processed_data += f"Word Count: {word_count}\n"
+        processed_data += f"             Word Count: {word_count}\n"
 
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size=12)
 
     for line in processed_data.split('\n'):
-        if line.strip() == "Essay Assessment Result":  
+        if line.strip() == "Automated Essay Assessment Result":  
            pdf.set_font("Arial", 'B', size=12) 
-           pdf.cell(0, 10, line, ln=True, align='C') 
+           pdf.set_fill_color(173, 216, 230)  # Light blue background
+           pdf.cell(0, 20, line, ln=True, align='C', fill=True)
+           pdf.set_fill_color(255, 255, 255) 
         elif "Overall Average" in line:  
            pdf.set_font("Arial", 'B', size=12) 
            pdf.cell(0, 10, line, ln=True) 
         else:
            pdf.set_font("Arial", size=12)
            pdf.cell(0, 10, line, ln=True)
+
+    logo_path = "website\static\campus-logo.png" 
+    pdf.image(logo_path, x=25, y=10, w=20)
+
+    logo_path = "website\\static\\logo.png" 
+    pdf.image(logo_path, x=160, y=10, w=20)
+
+        # footer
+    pdf.set_font("Arial", style='', size=6)
+    pdf.set_y(280)  
+    pdf.cell(0,-5, "AES System developed by Quian AJ., Saquido J., Dacillo S", 0, 1, 'L')
 
     script_directory = os.path.dirname(os.path.abspath(__file__))
     pdf_output_path = os.path.join(script_directory, 'result.pdf')
