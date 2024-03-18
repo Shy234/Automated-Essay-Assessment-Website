@@ -278,6 +278,12 @@ def assess_essay(essay_text, selected_criteria):
 
     return assessment_results
 
+def process_docx(essay_text):
+    docx_content = ""
+    doc = Document(essay_text)
+    for paragraph in doc.paragraphs:
+        docx_content += paragraph.text + "\n"
+    return docx_content
 
 
 
@@ -376,16 +382,20 @@ def assess():
         student_number = request.form.get('studentNumber', '')
         uploaded_file_name = request.form.get('uploadedfilename', '')
 
+        essay_text_content = ""
+
         if essay_file:
             uploaded_file_name = essay_file.filename
 
         try:
             if essay_file:
                 essay_text = essay_file.read().decode("utf-8", errors="ignore")
+                essay_text_content = process_docx(essay_file)
                 assessment_results = assess_essay(essay_text, selected_criteria)
                 return render_template("home.html", folders=user_folders, results=assessment_results, user=current_user,
                                        question=question, student_number=student_number,
-                                       uploaded_file_name=uploaded_file_name, system_score=assessment_results["Overall Average"])
+                                       uploaded_file_name=uploaded_file_name, system_score=assessment_results["Overall Average"],
+                                       essay_text_content=essay_text_content)
 
             else:
                 assessment_results = {}
@@ -496,10 +506,12 @@ def save_to_folder():
 
 @views.route('/export_and_download', methods=['POST'])
 def export_and_download():
+    essay_file = request.files.get("essay")
     student_number = request.form.get('student_number')
     uploaded_file_name = request.form.get('essay', '') 
     question = request.form.get('question')
     results = request.form.getlist('result')
+    essay_content = request.form.get('essay_content', '')
 
     if len(question.split()) > 9:
         question_lines = textwrap.wrap(question, width=90)  
@@ -510,7 +522,7 @@ def export_and_download():
 
         if len(question_lines) > 1:
 
-            question = '\n               '.join([question_lines[0]] + question_lines[1:])
+            question = '\n               '.join([question_lines[0]] + question_lines[1:]) 
 
     processed_data = (
         "     Automated Essay Assessment Result\n"  
@@ -525,39 +537,42 @@ def export_and_download():
     num_results = 0
     for result in results:
         key, value = result.split(': ')
-        if key.strip() != "Overall Average" and "Word Count" not in key:
-            processed_data += f"               {key.strip()}: {value.strip()}\n" 
+        if key.strip() != "Overall Average" and "Word Count" not in key:  
+            processed_data += f"               {key.strip()}: {value.strip()}\n"  
             overall_average += float(value.strip())
             num_results += 1
 
     if num_results > 0:
         overall_average /= num_results
-        processed_data += f"             Overall Average: {overall_average:.2f}\n"
-    
-    word_count = None
-    for result in results:
-            if result.startswith("Word Count"):
-                parts = result.split(': ')
-                if len(parts) == 2:
-                    word_count = parts[1].strip()
-                    break
+        processed_data += f"               Overall Average: {overall_average:.2f}\n"
 
-    if word_count is not None:
-            processed_data += f"               Word Count: {word_count}\n"
+    word_count = next((result.split(': ')[1].strip() for result in results if result.startswith("Word Count")), None)
+    if word_count:
+        processed_data += f"               Word Count: {word_count}\n"
+
+   
+    processed_data += (
+        "Essay Content:\n"
+    )
+    # Encoding essay_content
+    essay_content = essay_content.encode('latin-1', 'replace').decode('latin-1')
 
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size=12)
 
+
     for line in processed_data.split('\n'):
         if line.strip() == "Automated Essay Assessment Result":  
-           pdf.set_font("Arial", 'B', size=12) 
+           pdf.set_font("Arial", 'B', size=14) 
            pdf.set_fill_color(173, 216, 230)  # Light blue background
            pdf.cell(0, 20, line, ln=True, align='C', fill=True)
-           pdf.set_fill_color(255, 255, 255) 
-        elif "Overall Average" in line:  
-           pdf.set_font("Arial", 'B', size=12) 
-           pdf.cell(0, 10, line, ln=True) 
+           pdf.set_fill_color(255, 255, 255)
+        elif "Overall Average" in line or "Word Count" in line:
+            pdf.set_fill_color(144, 238, 144)  # Light green background color
+            pdf.set_font("Arial", 'B', size=12)
+            pdf.cell(0, 10, line, ln=True, border=1, fill=True) 
+            pdf.set_fill_color(255, 255, 255)
         else:
            pdf.set_font("Arial", size=12)
            pdf.cell(0, 10, line, ln=True)
@@ -567,6 +582,10 @@ def export_and_download():
 
     logo_path = "website\\static\\logo.png" 
     pdf.image(logo_path, x=160, y=10, w=20)
+
+    pdf.set_font("Arial", style='I', size=11)
+    pdf.set_xy(10, 135)
+    pdf.multi_cell(0, 10, essay_content, align='J')
 
         # footer
     pdf.set_font("Arial", style='', size=6)
